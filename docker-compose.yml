@@ -3,25 +3,29 @@ version: '3.8'
 services:
   web:
     build: .
-    # container_name: django-app
+    container_name: online-learning-platform-web
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/usr/src/app/
     ports:
-      - 8000:8000
+      - "8000:8000"
     env_file:
       - ./.env.dev
     depends_on:
-      - db
+      - redis
 
-  db:
-    image: postgres:15
+  redis:
+    image: docker.arvancloud.ir/redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    command: celery -A core worker -l INFO
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=admin_django
-      - POSTGRES_PASSWORD=password_django
-      - POSTGRES_DB=django_dev
-
-volumes:
-  postgres_data:
+      - .:/usr/src/app/
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - web
+      - redis

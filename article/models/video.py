@@ -5,7 +5,7 @@ from django.db.models.signals import post_delete
 from django.core.validators import FileExtensionValidator
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save
-from moviepy.editor import VideoFileClip
+# from moviepy.editor import VideoFileClip
 import datetime
 
 

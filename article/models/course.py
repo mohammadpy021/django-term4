@@ -8,7 +8,7 @@ from django.core.files.storage import default_storage
 from django.dispatch import receiver
 from django.db.models.signals import post_delete, pre_save, post_save
 from django.core.validators import MinValueValidator, MaxValueValidator
-from moviepy.editor import VideoFileClip
+# from moviepy.editor import VideoFileClip
 import datetime
 
 from article.models.video import Videos
@@ -102,21 +102,22 @@ def delete_associated_files(sender, instance, **kwargs):
             
 
     
-@receiver(post_save, sender=Course)
-def video_duration(sender, instance, created, *args, **kwargs):
-    """ create duration for video"""
-    # from article.models import Videos
-    # from PIL import Image
+# @receiver(post_save, sender=Course)
+# def video_duration(sender, instance, created, *args, **kwargs):
+#     """ create duration for video"""
+#     # TODO: uncomment this later the error was the library not being installed
+#     # from article.models import Videos
+#     # from PIL import Image
            
-    videos = instance.videos.all()
-    # videos = Videos.objects.all()
-    for video in videos:
-        clip = VideoFileClip(video.videofile.path)
-        video.duration = datetime.timedelta(seconds=int(clip.duration))
-        # frame_data = clip.get_frame(1)
-        # i.video_thumbnail = Image.fromarray(frame_data, 'RGB')
-        video.save()
-        # instance.save()
+#     videos = instance.videos.all()
+#     # videos = Videos.objects.all()
+#     for video in videos:
+#         clip = VideoFileClip(video.videofile.path)
+#         video.duration = datetime.timedelta(seconds=int(clip.duration))
+#         # frame_data = clip.get_frame(1)
+#         # i.video_thumbnail = Image.fromarray(frame_data, 'RGB')
+#         video.save()
+#         # instance.save()
 
 
  

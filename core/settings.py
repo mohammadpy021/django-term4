@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.environ.get("SECRET_KEY") #
+SECRET_KEY = os.environ.get("SECRET_KEY", "abc") #
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  bool(os.environ.get("DEBUG", default=0))
+DEBUG = int(os.environ.get("DEBUG", 1)) == 1
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", 'http://127.0.0.1:1337']
@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_spectacular', # Swagger
     # 'ckeditor',          # CKEditor config
     # 'ckeditor_uploader', # CKEditor media uploader
     'jalali_date',
@@ -58,11 +61,12 @@ INSTALLED_APPS = [
      'crispy_bootstrap5',
 
     'django_cleanup.apps.CleanupConfig',#this be last
-    "debug_toolbar",
+    # "debug_toolbar",
+
 ]
 
 MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
     
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -216,3 +220,62 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+
+
+# ==========================================
+# API & REST Framework Settings
+# ==========================================
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', # تنظیم Swagger
+}
+
+# ==========================================
+# JWT Settings
+# ==========================================
+from datetime import timedelta
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+# ==========================================
+# Swagger (drf-spectacular) Settings
+# ==========================================
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Online Learning Platform API',
+    'DESCRIPTION': 'API documentation for Mohammad Django Project',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+
+# ==========================================
+# Celery & Redis Settings
+# ==========================================
+# We use Redis as the message broker and result backend
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+# Serialization format settings
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+
+
+# ==========================================
+# Redis Cache Settings
+# ==========================================
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://redis:6379/1', # Using DB 1 for cache
+    }
+}

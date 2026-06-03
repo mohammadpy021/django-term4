@@ -4,7 +4,7 @@ from jalali_date import datetime2jalali
 from jalali_date.fields import JalaliDateField
 from jalali_date.widgets import AdminJalaliDateWidget
 from django.utils.translation import gettext_lazy as _
-from moviepy.editor import VideoFileClip
+# from moviepy.editor import VideoFileClip
 import datetime
 from .models import Course, Category, Videos, Question, Quiz, HomePage
 from .forms import CourseForm
@@ -46,17 +46,18 @@ class CourseAdmin(admin.ModelAdmin):
         form.base_fields['author'].queryset  = form.base_fields['author'].queryset.filter(is_superuser= True)  #way 2
         return form
     
-    def save_formset(self, request, form, formset, change):
-        """ create the duration for videos and save it before the parent model(course)"""
-        formset.save() # this will save the children
-        form.instance.save() # form.instance is the parent
-        videos = form.instance.videos.all()
-        for video in videos:
-            clip = VideoFileClip(video.videofile.path)
-            video.duration = datetime.timedelta(seconds=int(clip.duration))
-            # frame_data = clip.get_frame(1)
-            # i.video_thumbnail = Image.fromarray(frame_data, 'RGB')
-            video.save()
+    # def save_formset(self, request, form, formset, change):
+    #     """ create the duration for videos and save it before the parent model(course)"""
+    #     #TODO uncomment this later
+    #     formset.save() # this will save the children
+    #     form.instance.save() # form.instance is the parent
+    #     videos = form.instance.videos.all()
+    #     for video in videos:
+    #         clip = VideoFileClip(video.videofile.path)
+    #         video.duration = datetime.timedelta(seconds=int(clip.duration))
+    #         # frame_data = clip.get_frame(1)
+    #         # i.video_thumbnail = Image.fromarray(frame_data, 'RGB')
+    #         video.save()
    
 
     def image_tag(self, obj):

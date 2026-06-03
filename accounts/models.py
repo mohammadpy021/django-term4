@@ -6,7 +6,21 @@ from django.utils.translation import gettext_lazy as _
 class CustomUserManager(UserManager):
     ''' custom user manager '''
 
-    def _create_user(self, email, password, **extra_fields):
+    # def _create_user(self, email, password, **extra_fields):
+    #     if not email:
+    #         raise ValueError("The given email must be set")
+    #     extra_fields.setdefault("is_staff", False)
+    #     extra_fields.setdefault("is_superuser", False)
+    #     email = self.normalize_email(email)
+    #     user = self.model( email=email, **extra_fields)
+    #     user.password = make_password(password)
+    #     # user.set_password(password)
+    #     user.save(using=self._db)
+    #     return user
+
+    def create_user(self, email, password, **extra_fields):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         if not email:
             raise ValueError("The given email must be set")
         extra_fields.setdefault("is_staff", False)
@@ -17,11 +31,6 @@ class CustomUserManager(UserManager):
         # user.set_password(password)
         user.save(using=self._db)
         return user
-
-    def create_user(self, email, password, **extra_fields):
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", False)
-        return self._create_user(email, password, **extra_fields)
     
     def create_superuser(self, email, password, **extra_fields):
         # super(self).create_superuser(self, username, email=None, password=None, **extra_fields)
@@ -36,7 +45,7 @@ class CustomUserManager(UserManager):
         if extra_fields.get("is_verified") is not True:#custom
             raise ValueError("Superuser must have is_verified=True.")
 
-        return self._create_user( email, password, **extra_fields)
+        return self.create_user( email, password, **extra_fields)
 
 class User(AbstractUser):
     username = models.CharField(("username"), max_length=150,      
