@@ -3,6 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+# from rest_framework import serializers
 from drf_spectacular.utils import extend_schema
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -27,7 +28,7 @@ class HomePageAPIView(generics.RetrieveAPIView):
 class CourseEnrollAPIView(APIView):
     # add course to the cousrse list  of user
     permission_classes = [IsAuthenticated]
-
+    # serializer_class = serializers.Serializer
     @extend_schema(responses={200: dict, 400: dict})
     def post(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
@@ -86,7 +87,7 @@ class VideoRetrieveAPIView(generics.RetrieveAPIView):
 
 class QuizTakeAPIView(APIView):
     permission_classes = [IsAuthenticated]
-
+    # serializer_class = serializers.Serializer
     def get(self, request, quiz_id):
         """
         get list of questions for a quiz, or return the result if the user has already taken it.
